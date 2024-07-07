@@ -779,21 +779,16 @@ Let's dive into the data and uncover the geographic patterns of penguin populati
     """
     )
 
-    # Species Distribution across Top 5 Sites
-    st.subheader(f"Species Distribution in Top {min(5, num_top_sites)} Sites")
-    top_5_sites = (
-        site_data.drop_duplicates("site_name")
-        .nlargest(min(5, num_top_sites), "total_count")["site_name"]
-        .tolist()
-    )
-    species_dist = site_data[site_data["site_name"].isin(top_5_sites)]
+    # Species Distribution across Top N Sites
+    st.subheader(f"Species Distribution in Top {num_top_sites} Sites")
+    species_dist = site_data[site_data["site_name"].isin(top_sites)]
 
     fig = px.bar(
         species_dist,
         x="site_name",
         y="penguin_count",
         color="common_name",
-        title=f"Species Distribution in Top {min(5, num_top_sites)} Penguin Colony Sites",
+        title=f"Species Distribution in Top {num_top_sites} Penguin Colony Sites",
         labels={
             "site_name": "Site Name",
             "penguin_count": "Penguin Count",
@@ -804,8 +799,8 @@ Let's dive into the data and uncover the geographic patterns of penguin populati
     st.plotly_chart(fig)
 
     st.write(
-        """
-    This stacked bar chart shows the distribution of different penguin species across the top colony sites.
+        f"""
+    This stacked bar chart shows the distribution of different penguin species across the top {num_top_sites} colony sites.
     It provides insights into which species are dominant at each site and the overall diversity of penguins at these locations.
     """
     )
@@ -813,7 +808,7 @@ Let's dive into the data and uncover the geographic patterns of penguin populati
     # Site Comparison
     st.subheader("Site Comparison")
     selected_sites = st.multiselect(
-        "Select sites to compare", df["site_name"].unique(), default=top_5_sites[:3]
+        "Select sites to compare", df["site_name"].unique(), default=top_sites
     )
 
     if selected_sites:
@@ -904,7 +899,6 @@ Let's dive into the data and uncover the geographic patterns of penguin populati
         * **Trend** shows the slope (population change per year) of the linear regression line (positive for increasing, negative for decreasing)
         """
         )
-
         # Add custom CSS to adjust table size
         st.markdown(
             """
@@ -1431,74 +1425,6 @@ Let's examine the data to uncover the intricate relationship between climate tre
     """
     )
 
-# elif current_section == "Conservation":
-#     st.header("Conservation")
-#     # Content for Conservation will be added here
-#     st.write(
-#         """
-# Our penguin tale reaches its climax as we confront the challenges revealed by our data journey. But this story isn't over – in fact, we're at a critical turning point.
-
-# What actions can we take to ensure a happy ending for Antarctic penguins? How can we use the insights we've gained to make a difference?
-
-# In this final chapter, we'll explore conservation efforts and discover how each of us can play a role in shaping the future of Antarctica's iconic birds.
-# """
-#     )
-#     st.write(
-#         """
-#     Conservation efforts are critical for protecting Antarctic penguin populations and their habitats.
-#     This section highlights key initiatives and provides practical ways for you to actively contribute to penguin conservation.
-#     """
-#     )
-
-#     st.subheader("Explore and Contribute")
-#     st.write(
-#         """
-#     You can explore detailed data and contribute to the conservation efforts directly through the [Penguin Map Project](https://www.penguinmap.com/).
-#     - **Explore Data**: Check out the interactive [MAPPPD platform](https://www.penguinmap.com/mapppd/) to see real-time data.
-#     - **Contribute**: If you have relevant data or want to participate, learn how you can contribute [here](https://www.penguinmap.com/mapppd/Contribute).
-#     """
-#     )
-
-#     st.subheader("Current Conservation Initiatives")
-#     st.write(
-#         """
-#     1. Antarctic Treaty System: Protects the Antarctic environment and regulates human activities.
-#     2. Commission for the Conservation of Antarctic Marine Living Resources (CCAMLR): Manages fishing activities and protects marine ecosystems.
-#     3. Antarctic Specially Protected Areas (ASPAs): Designates areas for special protection and management.
-#     4. Long-term Ecological Research (LTER) programs: Monitors ecosystems and environmental changes.
-#     """
-#     )
-
-#     st.subheader("How You Can Help")
-#     st.write(
-#         """
-#     1. Support conservation organizations: Donate to or volunteer with organizations like Oceanites, WWF, or the Antarctic and Southern Ocean Coalition.
-#     2. Reduce your carbon footprint: Climate change affects penguin habitats, so reducing your emissions can help.
-#     3. Educate others: Share what you've learned about Antarctic penguins and the challenges they face.
-#     4. Responsible tourism: If visiting Antarctica, choose eco-friendly tour operators and follow guidelines to minimize impact.
-#     """
-#     )
-
-#     st.subheader("Sources")
-#     st.write("- [Penguin Map Project](https://www.penguinmap.com/).")
-#     st.write(
-#         "- [Climate Change Data](https://climatedata.imf.org/pages/climatechange-data)."
-#     )
-#     st.write(
-#         "- [Penguins in Zoos](https://jpn-psa.jp/en/forefront-of-avian-conservation-6-for-the-future-of-the-humboldt-penguin-spheniscus-humboldti/#:~:text=Currently%2C%20over%204%2C000%20penguins%20from,in%20zoos%20and%20aquariums%20worldwide.)."
-#     )
-#     st.write(
-#         "- [Penguins in wildlife](https://www.bas.ac.uk/about/antarctica/wildlife/penguins/)."
-#     )
-#     st.write(
-#         "- [Penguins species sizes](https://www.kaggle.com/datasets/parulpandey/palmer-archipelago-antarctica-penguin-data?select=penguins_size.csv)."
-#     )
-#     st.write(
-#         "- [Climate change: Thousands of penguins die in Antarctic ice breakup](https://www.bbc.com/news/science-environment-66492767)."
-#     )
-#     st.write(
-#         "- [Emperor penguins lost thousands of chicks to melting ice last year](https://www.sciencenews.org/article/antarctica-emperor-penguins-endangered-climate)."
-#     )
 elif current_section == "Conservation":
     st.header("Conservation: The Path Forward")
 
@@ -1615,30 +1541,6 @@ elif current_section == "Conservation":
     st.write(
         "- [Emperor penguins lost thousands of chicks to melting ice last year](https://www.sciencenews.org/article/antarctica-emperor-penguins-endangered-climate)."
     )
-
-    # st.subheader("Leave a Comment")
-    # st.write("""
-    # We value your thoughts and feedback. Please share your reflections on the penguin data story,
-    # any insights you've gained, or actions you plan to take for penguin conservation.
-    # """)
-
-    # user_comment = st.text_area("Your comment:", height=150)
-    # user_name = st.text_input("Your name (optional):")
-
-    # if st.button("Submit Comment"):
-    #     if user_comment:
-    #         # In a real application, you would save this comment to a database
-    #         # For this example, we'll just display a thank you message
-    #         st.success(f"Thank you{' ' + user_name if user_name else ''} for your comment!")
-    #         st.write("Your comment:")
-    #         st.info(user_comment)
-    #     else:
-    #         st.warning("Please enter a comment before submitting.")
-
-    # st.write("""
-    # Note: In this demo version, comments are not stored or displayed publicly.
-    # In a full implementation, comments would be saved and could be displayed after moderation.
-    # """)
 
     st.subheader("Leave a Comment")
     st.write(
