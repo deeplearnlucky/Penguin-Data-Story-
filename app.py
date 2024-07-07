@@ -105,7 +105,7 @@ st.sidebar.info(random.choice(fun_facts))
 explored_sections = st.sidebar.multiselect(
     "Sections you've explored:",
     sections,
-    default=st.session_state.explored_sections,
+    # default=st.session_state.explored_sections,
     key="explored_sections",
 )
 
