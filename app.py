@@ -85,30 +85,22 @@ current_section = st.sidebar.radio(
     format_func=lambda x: f"{section_emojis[x]} {x} - {section_descriptions[x]}",
 )
 
+# Initialize session state if it doesn't exist
+if "explored_sections" not in st.session_state:
+    st.session_state.explored_sections = []
+
+# ... (rest of your code remains the same)
+
 # Add the current section to explored_sections if it's not already there
 if current_section not in st.session_state.explored_sections:
     st.session_state.explored_sections.append(current_section)
 
-# Fun fact in the sidebar
-fun_facts = [
-    "Emperor penguins can dive up to 1,800 feet deep!",
-    "The smallest penguin species is only 16 inches tall.",
-    "Some penguins can leap 6-9 feet out of the water!",
-    "Penguins' black and white coloring is a form of camouflage called 'countershading'.",
-    "Male emperor penguins incubate their eggs for two months without eating.",
-]
-st.sidebar.markdown("---")
-st.sidebar.markdown("### 🎉 Fun Penguin Fact")
-st.sidebar.info(random.choice(fun_facts))
+# Display explored sections
+st.sidebar.markdown("### Sections you've explored:")
+for section in st.session_state.explored_sections:
+    st.sidebar.markdown(f"- {section_emojis[section]} {section}")
 
-# Optional: Add a progress bar to show how far the user has explored
-explored_sections = st.sidebar.multiselect(
-    "Sections you've explored:",
-    sections,
-    # default=st.session_state.explored_sections,
-    key="explored_sections",
-)
-
+# Calculate and display progress
 progress = len(st.session_state.explored_sections) / len(sections)
 st.sidebar.progress(progress)
 st.sidebar.text(f"{int(progress * 100)}% explored")
@@ -748,7 +740,7 @@ Let's dive into the data and uncover the geographic patterns of penguin populati
 
     # Selector for number of top sites
     num_top_sites = st.slider(
-        "Select number of top sites to display", min_value=3, max_value=20, value=10
+        "Select number of top sites to display", min_value=3, max_value=25, value=10
     )
     top_sites = (
         site_data.drop_duplicates("site_name")
@@ -1025,10 +1017,10 @@ Let's dive into the data and uncover the geographic patterns of penguin populati
     # Conservation Implications
     st.subheader("Conservation Implications")
     st.write(
-        """
+        f"""
     Based on the site analysis, we can draw several important conclusions for penguin conservation:
 
-    1. Priority Sites: The top 10 sites by population should be given high priority in conservation efforts due to their importance for overall penguin numbers.
+    1. Priority Sites: The top **{num_top_sites}** sites by population should be given high priority in conservation efforts due to their importance for overall penguin numbers.
     
     2. Species Diversity: Sites with high species richness are important for maintaining overall penguin diversity and should be protected.
     
