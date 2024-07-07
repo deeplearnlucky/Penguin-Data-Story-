@@ -686,31 +686,6 @@ Let's dive into the data and uncover the geographic patterns of penguin populati
 
     site_data = load_site_data()
 
-    # # Map of Penguin Colony Locations
-    # st.subheader("Penguin Colony Locations")
-
-    # m = folium.Map(location=[-77, 0], zoom_start=1.5, tiles="CartoDB positron")
-
-    # # Add markers for each unique site, with size based on population
-    # for _, site in site_data.drop_duplicates('site_name').iterrows():
-    #     folium.CircleMarker(
-    #         location=[site['latitude_epsg_4326'], site['longitude_epsg_4326']],
-    #         radius=np.log(site['total_count']) * 2,  # Adjust size based on population
-    #         popup=f"{site['site_name']}<br>Total Penguin Count: {site['total_count']:,}",
-    #         color='blue',
-    #         fill=True,
-    #         fill_color='blue'
-    #     ).add_to(m)
-
-    # folium_static(m)
-
-    # Map of Penguin Colony Locations
-    # The above code is creating a map using Folium in Python to display penguin colony locations. It
-    # includes markers for each unique site, with the marker size based on the population count of
-    # penguins at that site. The map can be toggled between dark mode and light mode. The code also adds a
-    # MarkerCluster to group nearby markers together for better visualization. Additionally, a legend is
-    # added to the map to indicate the size of the penguin colonies at each site. Finally, the map is
-    # displayed using Streamlit's `folium_static` function with specified width and height.
     st.subheader("Penguin Colony Locations")
 
     # Dark mode toggle, default is True (dark mode)
