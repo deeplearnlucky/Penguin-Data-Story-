@@ -804,7 +804,6 @@ Let's dive into the data and uncover the geographic patterns of penguin populati
     It provides insights into which species are dominant at each site and the overall diversity of penguins at these locations.
     """
     )
-
     # Site Comparison
     st.subheader("Site Comparison")
     selected_sites = st.multiselect(
@@ -815,18 +814,39 @@ Let's dive into the data and uncover the geographic patterns of penguin populati
         # Filter data for selected sites
         comparison_data = df[df["site_name"].isin(selected_sites)]
 
-        # Create a line chart for each species at the selected sites
-        chart = (
-            alt.Chart(comparison_data)
-            .mark_line()
-            .encode(
-                x="year:O",
-                y="penguin_count:Q",
-                color="common_name:N",
-                strokeDash="site_name:N",
-                tooltip=["site_name", "common_name", "year", "penguin_count"],
+        # Base chart
+        base = alt.Chart(comparison_data).encode(
+            x="year:O",
+            color="common_name:N",
+            strokeDash="site_name:N",
+            tooltip=["site_name", "common_name", "year", "penguin_count"],
+        )
+
+        # Points
+        points = base.mark_point().encode(
+            y=alt.Y("penguin_count:Q", scale=alt.Scale(type="log")),
+        )
+
+        # Lines
+        lines = base.mark_line().encode(
+            y=alt.Y("penguin_count:Q", scale=alt.Scale(type="log")),
+        )
+
+        # Regression lines
+        regression = (
+            base.transform_regression(
+                "year", "penguin_count", groupby=["site_name", "common_name"]
             )
-            .properties(width=800, height=400)
+            .mark_line(strokeDash=[5, 5])
+            .encode(
+                y=alt.Y("penguin_count:Q", scale=alt.Scale(type="log")),
+            )
+        )
+
+        # Combine layers
+        chart = (
+            (points + lines + regression)
+            .properties(width=800, height=600)  # Increased height
             .interactive()
         )
 
