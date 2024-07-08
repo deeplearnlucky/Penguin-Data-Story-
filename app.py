@@ -227,7 +227,7 @@ if current_section == "Introduction":
         f"""
     While our data shows an estimated {wild_penguins:,} penguins in the wild Antarctic regions, 
     it's reported that around {zoo_penguins:,} penguins from 11 species across five genera are 
-    kept in domestic zoos and aquariums worldwide. This represents about a third of all penguins 
+    kept in domestic zoos and aquariums worldwide. This represents about {zoo_penguins/wild_penguins*100} % of all penguins 
     in captivity globally.
 
     This means that for every penguin in captivity, there are approximately 
@@ -875,8 +875,8 @@ Let's dive into the data and uncover the geographic patterns of penguin populati
             trend_model.fit(site_trend[["year"]], site_trend["penguin_count"])
             summary.loc[summary["Site"] == site, "Trend"] = trend_model.coef_[0]
 
-        # Function to color code the trends
-        def color_trend(val):
+        # Function to color code the counts
+        def color_count(val):
             if pd.isna(val):
                 return "color: black"
             elif val > summary["Avg Count"].mean():
@@ -884,9 +884,20 @@ Let's dive into the data and uncover the geographic patterns of penguin populati
             else:
                 return "color: red"
 
+        # Function to color code the trend
+        def color_trend(val):
+            if pd.isna(val):
+                return "color: black"
+            elif val > 0:
+                return "color: green"
+            else:
+                return "color: red"
+
         # Apply styling
         styled_summary = summary.style.map(
-            color_trend, subset=["Avg Count", "Min Count", "Max Count"]
+            color_count, subset=["Min Count", "Max Count"]
+        ).map(
+            color_trend, subset=["Trend"]
         )
 
         # Display the styled dataframe
